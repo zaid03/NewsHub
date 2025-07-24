@@ -1,0 +1,208 @@
+<div class="settings-page">
+    <div class="settings-container">
+        <!-- Settings Header -->
+        <div class="settings-header">
+            <h1>
+                <i class="fas fa-cog"></i>
+                Settings
+            </h1>
+            <p>Configure your NewsHub experience</p>
+        </div>
+
+        <!-- App Settings -->
+        <div class="settings-section">
+            <h3 class="section-title">
+                <i class="fas fa-desktop"></i>
+                Display Settings
+            </h3>
+            <div class="settings-form">
+                <div class="form-group">
+                    <label for="theme">Theme</label>
+                    <select id="theme" class="form-input">
+                        <option value="light">Light Mode</option>
+                        <!-- <option value="dark">Dark Mode</option>
+                        <option value="auto">Auto (System)</option> -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="language">Language</label>
+                    <select id="language" class="form-input">
+                        <option value="en">English</option>
+                        <!-- <option value="fr">French</option>
+                        <option value="es">Spanish</option> -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="font-size">Font Size</label>
+                    <select id="font-size" class="form-input">
+                        <option value="small">Small</option>
+                        <option value="medium">Medium</option>
+                        <!-- <option value="large">Large</option> -->
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Settings -->
+        <!-- <div class="settings-section">
+            <h3 class="section-title">
+                <i class="fas fa-bell"></i>
+                Notifications
+            </h3>
+            <div class="notification-options">
+                <div class="notification-item">
+                    <label class="switch">
+                        <input type="checkbox" id="breaking-news" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <div class="notification-info">
+                        <span class="notification-title">Breaking News</span>
+                        <span class="notification-desc">Get notified about urgent news</span>
+                    </div>
+                </div>
+                <div class="notification-item">
+                    <label class="switch">
+                        <input type="checkbox" id="daily-digest">
+                        <span class="slider"></span>
+                    </label>
+                    <div class="notification-info">
+                        <span class="notification-title">Daily Digest</span>
+                        <span class="notification-desc">Receive daily news summary</span>
+                    </div>
+                </div>
+                <div class="notification-item">
+                    <label class="switch">
+                        <input type="checkbox" id="new-articles">
+                        <span class="slider"></span>
+                    </label>
+                    <div class="notification-info">
+                        <span class="notification-title">New Articles</span>
+                        <span class="notification-desc">Notify when new articles are available</span>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- Privacy Settings -->
+        <div class="settings-section">
+            <h3 class="section-title">
+                <i class="fas fa-shield-alt"></i>
+                Privacy & Data
+            </h3>
+            <div class="privacy-options">
+                <div class="privacy-item">
+                    <label class="switch">
+                        <input type="checkbox" id="tracking" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <div class="privacy-info">
+                        <span class="privacy-title">Reading Analytics</span>
+                        <span class="privacy-desc">Help improve recommendations</span>
+                    </div>
+                </div>
+                <div class="privacy-item">
+                    <label class="switch">
+                        <input type="checkbox" id="personalization" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <div class="privacy-info">
+                        <span class="privacy-title">Personalized Content</span>
+                        <span class="privacy-desc">Show content based on your interests</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Management -->
+        <div class="settings-section">
+            <h3 class="section-title">
+                <i class="fas fa-database"></i>
+                Data Management
+            </h3>
+            <div class="data-actions">
+                <button class="action-btn" onclick="clearCache()">
+                    <i class="fas fa-broom"></i>
+                    Clear Cache
+                </button>
+                <!-- <button class="action-btn" onclick="clearHistory()">
+                    <i class="fas fa-history"></i>
+                    Clear Reading History
+                </button> -->
+                <button class="action-btn" onclick="exportData()">
+                    <i class="fas fa-download"></i>
+                    Export My Data
+                </button>
+            </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="settings-footer">
+            <button class="save-all-btn" onclick="saveAllSettings()">
+                <i class="fas fa-save"></i>
+                Save All Settings
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Simple settings functions
+function saveAllSettings() {
+    const theme = document.getElementById('theme').value;
+    const language = document.getElementById('language').value;
+    const fontSize = document.getElementById('font-size').value;
+    
+    // Save to localStorage
+    localStorage.setItem('theme', theme);
+    localStorage.setItem('language', language);
+    localStorage.setItem('fontSize', fontSize);
+    
+    alert('Settings saved successfully!');
+}
+
+function clearCache() {
+    if (confirm('Are you sure you want to clear the cache?')) {
+        localStorage.clear();
+        alert('Cache cleared!');
+    }
+}
+
+function clearHistory() {
+    const user_id = sessionStorage.getItem("user_id");
+    if (!user_id) {
+        alert('Please log in first');
+        return;
+    }
+    
+    if (confirm('Are you sure you want to clear your reading history?')) {
+        fetch('http://localhost:3000/api/history/clear', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert('Reading history cleared!');
+            } else {
+                alert('Error clearing history');
+            }
+        });
+    }
+}
+
+function exportData() {
+    alert('Data export feature coming soon!');
+}
+
+// Load saved settings
+document.addEventListener('DOMContentLoaded', () => {
+    const theme = localStorage.getItem('theme') || 'light';
+    const language = localStorage.getItem('language') || 'en';
+    const fontSize = localStorage.getItem('fontSize') || 'medium';
+    
+    document.getElementById('theme').value = theme;
+    document.getElementById('language').value = language;
+    document.getElementById('font-size').value = fontSize;
+});
+</script>

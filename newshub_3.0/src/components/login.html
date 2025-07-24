@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <link rel="stylesheet" href="../styles/login.css">
+    <!--<link rel="stylesheet" href="../styles/sign.css"> -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <div class="container" id="cont">
+		<div class="form-box login">
+			<form action="#" id="login-form">
+				<h1>Sign in</h1>
+				<div class="input-box">
+					<span id="utilisateurerror" style="color:red;"></span>
+					<input type="text" name="username" id="utilisateur" placeholder="Username" required>
+					<i class='bx bxs-user'></i>
+				</div>
+				<div class="input-box">
+					<span id="motdepasserror" style="color:red;"></span>
+					<input type="password" name="motdepass" id="motdepass" placeholder="Password" required>
+					<i class='bx bxs-lock-alt'></i>
+				</div>
+				<!-- <div class="forgot-link">
+					<a href="#">Forgotten password?</a>
+				</div> -->
+				<input type="submit" class="btn" value="Se connecter"></input>
+				<!-- <p>Ou connecter avec les réseau socieaux</p>
+				<div class="social-icons">
+					<a href="#"><i class='bx bxl-google' style='color:#000000' ></i></a>
+					<a href="#"><i class='bx bxl-facebook' style='color:#000000' ></i></a>			
+				</div> -->
+			</form>
+		</div>
+		
+		<div class="form-box register">
+			<form action="#" id="signform">
+				<h1>Sign up</h1>
+				<div class="input-box">
+					<span id="utilisateurrerrorr" style="color:red;"></span>
+					<input type="text" name="username" id="utilisateurr" placeholder="Username" required>
+					<i class='bx bxs-user'></i>
+				</div>
+				<div class="input-box">
+					<span id="twoemailerror" style="color:red;"></span>
+					<input type="email" name="email" id="email-two" placeholder="Email" required>
+					<i class='bx bxs-envelope'></i>	
+				</div>
+				<div class="input-box">
+					<span id="gendererror" style="color:red;"></span>
+					<select id="gender" required>
+						<option value="" disabled selected>Choose</option>
+						<option value="male">Male</option>
+						<option value="female">Female</option>
+					</select>
+					<i class="fa-solid fa-person-half-dress"></i>
+				</div>
+				<div class="input-box">
+					<span id="motdepassserror" style="color:red;"></span>
+					<input type="password" name="motdepasss" id="motdepasss" placeholder="Password" required>
+					<i class='bx bxs-lock-alt'></i>
+				</div>
+				<span id="check" style="color:red;"></span>
+				<input type="submit" class="btn" value="Sign up"></input>
+				<!-- <p>Ou inscrire utulisant les réseau socieaux</p>
+				<div class="social-icons">
+					<a href="#"><i class='bx bxl-google' style='color:#000000' ></i></a>
+					<a href="#"><i class='bx bxl-facebook' style='color:#000000' ></i></a>			
+				</div> -->
+			</form>
+		</div>
+		
+		<div class="toggle-box">
+			<div class="toggle-panel toggle-left">
+				<h1>Welcome</h1>
+				<p>You don't have an account ?</p>
+				<button class="btn register-btn" id="register">Sign up</button>
+			</div>
+			
+			<div class="toggle-panel toggle-right">
+				<h1 style="font-size: 28px;">NewsHub</h1>
+				<p>Already have an account ?<p>
+				<button class="btn login-btn" id="login">Sign in</button>
+			</div>
+		</div>
+	</div> 
+</body>
+<script src="../scripts/login.js"></script>
+<script src="../scripts/sign_log.js"></script>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>notification settings</title>
+    <link rel="stylesheet" href="../styles/notfication.css">
+</head>
+<body>
+    <div class="container">
+        <h2 class="head">Paramètres de notification</h2>
+        <p class="des">Choisissez les notifications que vous souhaitez recevoir</p>
+
+        <form id="preferences-form">
+            <h2 class="address">Type des notifications á recevoire</h2>
+            <label><input type="checkbox" name="notifications" value="imp"> Notifications importantes (tendance, dérniere nouvelles)</label>
+            <label><input type="checkbox" name="notifications" value="pers"> Notifications pérsonnalisées</label>
+            <label><input type="checkbox" name="notifications" value="mise"> Mise á jour de l'application</label>
+            <label><input type="checkbox" name="notifications" value="walo"> Aucun</label>
+
+            <h2 class="address">Mode des notifications á recevoire</h2>
+            <label><input type="checkbox" name="notifications" value="popup"> Popup sur app</label>
+            <label><input type="checkbox" name="notifications" value="system"> Notifications système</label>
+            <label><input type="checkbox" name="notifications" value="email"> Notification par e-mail</label>
+            <label><input type="checkbox" name="notifications" value="walo"> Aucun</label>
+
+            <h2 class="address">Fréquences des notifications</h2>
+            <label><input type="checkbox" name="notifications" value="reele"> Temps réel</label>
+            <label><input type="checkbox" name="notifications" value="quotidien"> Quotidien (chaque jour á 10h)</label>
+            <label><input type="checkbox" name="notifications" value="hebdo"> Hebdomadire (Chaque Samedi á 10h)</label>
+            <label><input type="checkbox" name="notifications" value="walo"> Aucun</label>
+
+            <input type="submit" value="Enregistrer" class="btn" style="margin-bottom: 20px;">
+            <span id="submiterror"></span>
+        </form>
+    </div>
+</body>
+<script src="../scripts/notification.js"></script>
+</html>

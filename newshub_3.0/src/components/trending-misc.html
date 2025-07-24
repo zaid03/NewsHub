@@ -1,0 +1,56 @@
+<div class="trending-sidebar">
+    <div class="trending-header">
+        <h2>Trending</h2>
+        <ul class="trending-topics">
+            <!-- for categories -->
+            <p>Trending categories</p>
+
+        </ul>
+        <!-- <ul>
+            <p>Trending topics</p>
+            <li><a href="#">Trending Topic 1</a></li>
+            <li><a href="#">Trending Topic 2</a></li>
+            <li><a href="#">Trending Topic 3</a></li>
+        </ul> -->
+        <!-- <ul>
+            for sources
+            <p>Trending sources</p>
+            <li><a href="#">Source 1</a></li>
+            <li><a href="#">Source 2</a></li>
+            <li><a href="#">Source 3</a></li>
+        </ul> -->
+    </div>
+
+    <div class="radio-player">
+        <h2>Radio Player</h2>
+        <div class="radio-mini-player" id="radio-mini-player" style="display: none;">
+            <div class="radio-info-mini">
+                <h3 id="current-radio-name">No station playing</h3>
+                <span id="current-radio-genre">-</span>
+            </div>
+            <div class="radio-controls-mini">
+                <button class="mini-play-btn" id="mini-play-btn">
+                    <i class="fa fa-play"></i>
+                </button>
+                <button class="mini-stop-btn" id="mini-stop-btn">
+                    <i class="fa fa-stop"></i>
+                </button>
+                <div class="mini-volume-control">
+                    <input type="range" min="0" max="100" value="50" class="mini-volume-slider" id="mini-volume-slider">
+                    <span class="mini-volume-label" id="mini-volume-label">50%</span>
+                </div>
+            </div>
+        </div>
+        <div class="radio-placeholder" id="radio-placeholder">
+            <p>No radio playing</p>
+            <a href="#radio" class="radio-link">Browse Radio Stations</a>
+        </div>
+    </div>
+</div>
+
+<div id="webview-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 100;">
+    <button id="back-to-news">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <webview id="article-viewer" style="width: 100%; height: calc(100% - 40px);"></webview>
+</div>

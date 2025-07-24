@@ -1,0 +1,34 @@
+# Ignore all node_modules folders
+**/node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Optional npm cache directory
+.npm
+
+# Electron build output (adjust if you use other build folders)
+dist/
+out/
+build/
+
+# Environment variable files
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code settings
+.vscode/
+
+# Optional Electron cache files
+electron-cache/
+env/
+chrome-win64/

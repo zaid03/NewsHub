@@ -1,0 +1,635 @@
+/* ====================================
+   UNIFIED CARD STYLES FOR ALL PAGES
+   ==================================== */
+
+
+/* ====================================
+   MAIN NEWS CARDS (index page) - FIX
+   ==================================== */
+
+.card {
+  background: linear-gradient(145deg, #ffffff 0%, #fafbfc 100%);
+  border-radius: 20px;
+  margin-bottom: 30px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  transition: all 0.4s ease;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+}
+
+.card-image {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.card:hover .card-image img {
+  transform: scale(1.05);
+}
+
+/* ✅ FIX: Card actions for main page cards - position them over the image */
+.card .card-actions {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+}
+
+/* ✅ FIX: Source topic for main page cards - position them over the image */
+.card .follow-card-topic {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 5;
+}
+
+.card-content {
+  padding: 25px;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+/* ✅ FIX: Remove absolute positioning from card-meta actions */
+.card-meta .card-actions {
+  position: static;
+  margin-left: auto;
+}
+
+/* ✅ FIX: Style the source link in card-meta differently */
+.card-meta .follow-card-topic {
+  position: static;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.card-meta .follow-card-topic:hover {
+  background: #667eea;
+  color: white;
+  transform: none;
+  box-shadow: none;
+}
+
+.title {
+  color: #2d3748;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 15px;
+  text-decoration: none;
+  display: block;
+  transition: color 0.3s ease;
+}
+
+.title:hover {
+  color: #667eea;
+}
+
+.card-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.category {
+  cursor: pointer;
+  background: #f1f5f9;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-weight: 600;
+  color: #475569;
+  transition: all 0.3s ease;
+}
+
+.category:hover {
+  background: #667eea;
+  color: white;
+}
+
+.summary {
+  color: #64748b;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* Common Card Actions */
+.card-actions {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  z-index: 10;
+  opacity: 1;
+  visibility: visible;
+  transition: all 0.3s ease;
+}
+
+/* Follow Button */
+.follow-btn {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #667eea;
+  font-size: 14px;
+  opacity: 1;
+  visibility: visible;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.follow-btn:hover {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.follow-btn.following {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.follow-btn.following:hover {
+  background: #dc3545;
+  border-color: #dc3545;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+/* Save Button */
+.save-btn {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(80, 201, 206, 0.3);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #50C9CE;
+  font-size: 14px;
+  opacity: 1;
+  visibility: visible;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.save-btn:hover {
+  background: #50C9CE;
+  color: white;
+  border-color: #50C9CE;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(80, 201, 206, 0.3);
+}
+
+.save-btn.saved {
+  background: #50C9CE;
+  color: white;
+  border-color: #50C9CE;
+  box-shadow: 0 4px 12px rgba(80, 201, 206, 0.3);
+}
+
+.save-btn.saved:hover {
+  background: #053d38;
+  border-color: #053d38;
+  box-shadow: 0 4px 12px rgba(5, 61, 56, 0.3);
+}
+
+/* Source Badge (unified for all card types) */
+.follow-card-topic,
+.cat-card-topic,
+.card-topic {
+  cursor: pointer;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 5;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.follow-card-topic:hover,
+.cat-card-topic:hover,
+.card-topic:hover {
+  background: rgba(102, 126, 234, 0.9);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* ====================================
+   MAIN NEWS CARDS (index page)
+   ==================================== */
+
+.card {
+  background: linear-gradient(145deg, #ffffff 0%, #fafbfc 100%);
+  border-radius: 20px;
+  margin-bottom: 30px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  transition: all 0.4s ease;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+}
+
+.card-image {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.card:hover .card-image img {
+  transform: scale(1.05);
+}
+
+.card-content {
+  padding: 25px;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.title {
+  color: #2d3748;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 15px;
+  text-decoration: none;
+  display: block;
+  transition: color 0.3s ease;
+}
+
+.title:hover {
+  color: #667eea;
+}
+
+.card-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.category {
+  cursor: pointer;
+  background: #f1f5f9;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-weight: 600;
+  color: #475569;
+  transition: all 0.3s ease;
+}
+
+.category:hover {
+  background: #667eea;
+  color: white;
+}
+
+.summary {
+  color: #64748b;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* ====================================
+   FOLLOWING PAGE CARDS
+   ==================================== */
+
+.follow-card {
+  background: linear-gradient(145deg, #ffffff 0%, #fafbfc 100%);
+  border-radius: 24px;
+  margin-bottom: 40px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  position: relative;
+  width: 95%;
+  height: 550px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.follow-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12);
+}
+
+.follow-card-header {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+  border-radius: 24px 24px 0 0;
+}
+
+.follow-card-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 30%, transparent 100%);
+  pointer-events: none;
+}
+
+.follow-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: brightness(1.1) contrast(1.05) saturate(1.1);
+}
+
+.follow-card:hover .follow-card-img {
+  transform: scale(1.08) rotate(1deg);
+  filter: brightness(1.2) contrast(1.1) saturate(1.2);
+}
+
+.follow-card-body {
+  padding: 35px 30px 30px;
+  position: relative;
+}
+
+.follow-card-title {
+  color: #1a202c;
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 18px;
+  text-decoration: none;
+  display: block;
+  transition: all 0.3s ease;
+}
+
+.follow-card-title:hover {
+  color: #667eea;
+}
+
+.follow-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.follow-card-source {
+  cursor: pointer;
+  background: #f1f5f9;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-weight: 700;
+  color: #475569;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  transition: all 0.3s ease;
+}
+
+.follow-card-source:hover {
+  background: #667eea;
+  color: white;
+}
+
+.follow-card-date {
+  font-weight: 600;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.follow-card-summary {
+  color: #475569;
+  line-height: 1.7;
+  font-size: 15px;
+  margin: 0;
+}
+
+/* ====================================
+   CATEGORY PAGE CARDS
+   ==================================== */
+
+.cat-card {
+  background: linear-gradient(145deg, #ffffff 0%, #fafbfc 100%);
+  border-radius: 24px;
+  margin-bottom: 40px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  position: relative;
+  height: 550px;
+}
+
+.cat-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12);
+}
+
+.cat-card-header {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+  border-radius: 24px 24px 0 0;
+}
+
+.cat-card-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 30%, transparent 100%);
+  pointer-events: none;
+}
+
+.cat-card-body {
+  padding: 35px 30px 30px;
+  position: relative;
+}
+
+.cat-card-title {
+  color: #1a202c;
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 18px;
+  text-decoration: none;
+  display: block;
+  transition: all 0.3s ease;
+}
+
+.cat-card-title:hover {
+  color: #667eea;
+}
+
+.cat-card-source {
+  cursor: pointer;
+  background: #f1f5f9;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-weight: 700;
+  color: #475569;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  transition: all 0.3s ease;
+}
+
+.cat-card-source:hover {
+  background: #667eea;
+  color: white;
+}
+
+.cat-card-date {
+  font-weight: 600;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.cat-card-summary {
+  color: #475569;
+  line-height: 1.7;
+  font-size: 15px;
+  margin: 0;
+}
+
+/* ====================================
+   RESPONSIVE DESIGN
+   ==================================== */
+
+@media (max-width: 768px) {
+  .card-actions {
+    top: 10px;
+    right: 10px;
+    gap: 6px;
+  }
+  
+  .follow-btn, .save-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+  
+  .follow-card-topic,
+  .cat-card-topic,
+  .card-topic {
+    top: 10px;
+    left: 10px;
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  
+  .follow-card, .cat-card {
+    height: auto;
+    min-height: 450px;
+  }
+  
+  .follow-card-header, .cat-card-header {
+    height: 200px;
+  }
+  
+  .follow-card-body, .cat-card-body {
+    padding: 25px 20px 20px;
+  }
+  
+  .follow-card-title, .cat-card-title {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-actions {
+    top: 8px;
+    right: 8px;
+    gap: 4px;
+  }
+  
+  .follow-btn, .save-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+  
+  .follow-card-topic,
+  .cat-card-topic,
+  .card-topic {
+    top: 8px;
+    left: 8px;
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+}

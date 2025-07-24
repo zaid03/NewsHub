@@ -1,0 +1,231 @@
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&family=DM+Serif+Text:ital@0;1&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+.test{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.test section{
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 900px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.title-container{
+    display: flex;
+    justify-content: center;
+}
+
+.title-container img{
+    width: 15%;
+    height: 15vh;
+}
+
+.title-container h2{
+    font-size: 28px;
+    font-family: "DM Serif Text", serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #000000;
+}
+
+.test form {
+    max-width: 100%; 
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.test form p{
+    text-align: center;
+    color: #000000;
+    font-size: 18px;
+    font-family: "Noto Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+}
+
+td {
+    padding: 8px;
+    width: 50%;
+}
+
+.test input[type="email"],
+.test input[type="password"]{
+    width: 97%;
+    padding: 10px;
+    border: 1px solid #DCDCDC;
+    border-radius: 5px;
+    box-sizing: border-box; 
+}
+
+.test input[type="text"],
+.test input[type="date"],
+.test select {
+    width: 95%;
+    padding: 10px;
+    border: 1px solid #DCDCDC;
+    border-radius: 5px;
+    box-sizing: border-box; 
+}
+
+input[type="text"]:hover ,
+input[type="date"]:hover ,
+input[type="email"]:hover ,
+input[type="password"]:hover ,
+select:hover {
+    outline: none;
+    border: 1px solid #50c9cE;
+}
+
+input[type="text"]:focus ,
+input[type="date"]:focus ,
+input[type="email"]:focus ,
+input[type="password"]:focus ,
+select:focus {
+    outline: none;
+    border: 1px solid #053d38;
+}
+
+button {
+    width: 95%;
+    padding: 12px;
+    background-color: #50c9cE;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-family: "DM Serif Text", serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 15px;
+}
+
+button:hover {
+    background-color: #053d38 !important;
+}
+
+.login-btn{
+    color: #50c9cE;
+    font-weight: bold;
+    text-decoration: none;
+    margin-top: 10px;
+    font-family: "Noto Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+
+.login-btn:hover {
+    text-decoration: underline;
+    color: #053d38;
+}
+
+.law {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.law a {
+    font-size: 10px;
+    color: #000000;
+    text-decoration: none;
+}
+
+.law a:hover {
+    text-decoration: underline;
+}
+
+
+@media screen and (max-width: 1900px) {
+    .test section {
+        width: 90%;
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .title-container img {
+        width: 20%;
+        height: 500;
+    }
+    
+    .title-container h2{
+        display: none;
+    }
+
+    .test table {
+        margin: 10px 0;
+    }
+
+    td {
+        padding: 5px;
+    }
+
+    button {
+        padding: 10px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .test section {
+        width: 95%;
+        margin: 10px;
+        padding: 10px;
+    }
+
+    .title-container img {
+        width: 25%;
+        height: auto;
+    }
+
+    .title-container h2 {
+        font-size: 20px;
+    }
+
+    .test form p{
+        font-size: 13px;
+    }
+
+    .test table {
+        margin: 5px 0;
+    }
+
+    td {
+        padding: 3px;
+    }
+
+    button {
+        padding: 8px;
+    }
+
+    .law {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .law a {
+        font-size: 12px;
+        margin-top: 5px;
+    }
+}
+
+

@@ -1,0 +1,150 @@
+
+<div class="content-container">
+    <div class="header-like">
+        <h1>News Hub</h1>
+        <p>Discover the latest stories across all categories with style ✨</p>
+    </div>
+
+    <div class="container">
+        <div class="categories-grid">
+            <div class="category-card" onclick="selectCategory('General')" tabindex="0">
+            <div class="category-icon">📰</div>
+            <h3 class="category-title">General</h3>
+            <p class="category-subtitle">Top stories & headlines</p>
+        </div>
+
+                <div class="category-card" onclick="selectCategory('International')" tabindex="0">
+                <div class="category-icon">🌍</div>
+                <h3 class="category-title">International</h3>
+                <p class="category-subtitle">World news & events</p>
+            </div>
+                
+            <div class="category-card" onclick="selectCategory('Local')" tabindex="0">
+                <div class="category-icon">🏠</div>
+                <h3 class="category-title">Local</h3>
+                <p class="category-subtitle">News from your area</p>
+            </div>
+
+            <div class="category-card" onclick="selectCategory('Politics')" tabindex="0">
+                <div class="category-icon">🏛️</div>
+                <h3 class="category-title">Politics</h3>
+                <p class="category-subtitle">Government & policy</p>
+            </div>
+
+            <div class="category-card" onclick="selectCategory('Business & Finance')" tabindex="0">
+                <div class="category-icon">💼</div>
+                <h3 class="category-title">Business & Finance</h3>
+                <p class="category-subtitle">Markets & economy</p>
+            </div>
+
+            <div class="category-card" onclick="selectCategory('Tech & Innovation')" tabindex="0">
+                <div class="category-icon">💡</div>
+                <h3 class="category-title">Tech & Innovation</h3>
+                <p class="category-subtitle">Latest in technology</p>
+            </div>
+
+            <div class="category-card" onclick="selectCategory('Earth & Universe')" tabindex="0">
+                <div class="category-icon">🌌</div>
+                <h3 class="category-title">Earth & Universe</h3>
+                <p class="category-subtitle">Science & space</p>
+            </div>
+
+            <div class="category-card" onclick="selectCategory('Health')" tabindex="0">
+                <div class="category-icon">🏥</div>
+                <h3 class="category-title">Health</h3>
+                <p class="category-subtitle">Wellness & medicine</p>
+            </div>
+
+            <div class="category-card" onclick="selectCategory('Fashion')" tabindex="0">
+                <div class="category-icon">👗</div>
+                <h3 class="category-title">Fashion</h3>
+                <p class="category-subtitle">Style & trends</p>
+            </div>
+            
+            <div class="category-card" onclick="selectCategory('Travel')" tabindex="0">
+                <div class="category-icon">✈️</div>
+                <h3 class="category-title">Travel</h3>
+                <p class="category-subtitle">Destinations & tips</p>
+            </div>
+
+            <div class="category-card" onclick="selectCategory('Food')" tabindex="0">
+                <div class="category-icon">🍽️</div>
+                <h3 class="category-title">Food</h3>
+                <p class="category-subtitle">Cuisine & recipes</p>
+            </div>
+
+            <div class="category-card" onclick="selectCategory('Sports')" tabindex="0">
+                <div class="category-icon">🏅</div>
+                <h3 class="category-title">Sports</h3>
+                <p class="category-subtitle">Scores & highlights</p>
+            </div>
+            
+            <div class="category-card" onclick="selectCategory('Gaming')" tabindex="0">
+                <div class="category-icon">🎮</div>
+                <h3 class="category-title">Gaming</h3>
+                <p class="category-subtitle">Games & esports</p>
+            </div>
+            
+            <div class="category-card" onclick="selectCategory('Real Estate')" tabindex="0">
+                <div class="category-icon">🏢</div>
+                <h3 class="category-title">Real Estate</h3>
+                <p class="category-subtitle">Property & housing</p>
+            </div>
+
+            <div class="category-card" onclick="selectCategory('Middle East')" tabindex="0">
+                <div class="category-icon">🕌</div>
+                <h3 class="category-title">Middle East</h3>
+                <p class="category-subtitle">Regional news</p>
+            </div>
+
+            <div class="category-card" onclick="selectCategory('Africa')" tabindex="0">
+                <div class="category-icon">🦁</div>
+                <h3 class="category-title">Africa</h3>
+                <p class="category-subtitle">African news</p>
+            </div>
+
+            <div class="category-card" onclick="selectCategory('EU')" tabindex="0">
+                <div class="category-icon">
+                    <img src="https://hatscripts.github.io/circle-flags/flags/eu.svg" alt="EU Flag" />
+                </div>
+                <h3 class="category-title">EU</h3>
+                <p class="category-subtitle">European Union</p>
+            </div>
+
+           <div class="category-card" onclick="selectCategory('US')" tabindex="0">
+                <div class="category-icon">
+                    <img src="https://hatscripts.github.io/circle-flags/flags/us.svg" alt="US Flag" />
+                </div>
+                <h3 class="category-title">US</h3>
+                <p class="category-subtitle">United States</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="webview-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 100;">
+    <button id="back-to-news">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <webview id="article-viewer" style="width: 100%; height: calc(100% - 40px);"></webview>
+</div>
+
+<script>
+    
+
+        // Optional: Add visual feedback when clicking
+        function addClickFeedback(event) {
+            const card = event.target.closest('.category-card');
+            if (card) {
+                card.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    card.style.transform = '';
+                }, 150);
+            }
+        }
+
+        // Add click feedback to all category cards
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', addClickFeedback);
+        });
+</script>
