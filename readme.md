@@ -1,9 +1,8 @@
-it also alows you to listen to radio weather for music or news.
 
 # 📰 NewsHub
 
 <p align="center">
-    <img src="src/assets/logo.svg" alt="NewsHub Logo" width="120"/>
+    <img src="newshub_3.0/src/assets/newshub.png" alt="NewsHub Logo" width="120"/>
 </p>
 
 <p align="center">
