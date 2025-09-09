@@ -32,6 +32,7 @@ news-hub/
 ├── .gitignore
 ├── README.md
 └── package.json (root if using workspaces)
+```
 
 ⚙️ Setup Instructions
 Prerequisites
@@ -79,4 +80,3 @@ This project is licensed under the MIT License.
 ## Contact
 
 For questions or feedback, open an issue or contact terguyzaid@gmail.com.
-```
