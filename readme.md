@@ -71,4 +71,12 @@ Git
     This project is licensed under the MIT License — see the [LICENSE](./LICENSE) file for details.
 
     © 2025 Zaid Terguy
+
+## License
+
+This project is licensed under the MIT License.
+
+## Contact
+
+For questions or feedback, open an issue or contact terguyzaid@gmail.com.
 ```
