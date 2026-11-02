@@ -28,8 +28,14 @@ app.use(
     })
 );
 
+console.log({
+    DB_HOST: process.env.DB_HOST,
+    DB_PORT: process.env.DB_PORT,
+    DB_NAME: process.env.DB_NAME
+});
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
@@ -37,21 +43,6 @@ const pool = mysql.createPool({
     connectionLimit: 500,
     queueLimit: 0
 });
-
-// const connectToDatabase = async () => {
-//     console.log('DB Config:', {
-//         host: process.env.DB_HOST,
-//         user: process.env.DB_USER,
-//         password: process.env.DB_PASSWORD,
-//         database: process.env.DB_NAME,
-//     });
-//     return mysql.createConnection({
-//         host: process.env.DB_HOST,
-//         user: process.env.DB_USER,
-//         password: process.env.DB_PASSWORD,
-//         database: process.env.DB_NAME,
-//     });
-// };
 
 //sign route
 app.post('/api/sign', async (req, res) => {
@@ -614,29 +605,6 @@ app.post('/api/trending/add', async (req, res) => {
         if (connection) connection.release();
     }
 });
-
-// route to fetch news by newest
-// app.get('/api/newest-added', async (req, res) => {
-//     console.log("fetching newest news route hit");
-//     let connection;
-
-//     try {
-//         connection = await pool.getConnection();
-//         console.log('Database connected');
-        
-//         const [rows] = await connection.execute(
-//             'SELECT * FROM news ORDER BY published DESC LIMIT 3'
-//         );
-//         console.log('Newest news retrieved:', rows);
-
-//         res.json({ success: true, newest: rows });
-//     } catch (error) {
-//         console.error('Error during newest news retrieval:', error);
-//         res.status(500).json({ success: false, message: "Internal server error." });
-//     } finally {
-//         if (connection) connection.release();
-//     }
-// });
 
 //route to call trending news in order 
 app.get('/api/trending-now', async (req, res) => {
