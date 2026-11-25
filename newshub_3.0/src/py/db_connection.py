@@ -1,29 +1,25 @@
-import pymysql
-from dotenv import load_dotenv
-import os
+import sqlite3
+from pathlib import Path
+import runpy
 
-load_dotenv(
-    os.path.join(os.path.dirname(__file__), '..', 'backend', '.env')
-)
+DB_PATH = Path(__file__).resolve().parents[2] / "database" / "newshub.db"
+INIT_DB_PATH = DB_PATH.parent / "init_db.py"
+runpy.run_path(str(INIT_DB_PATH))
 
 def create_connection():
     try:
-        print("Connecting to database...")
-        print(os.getenv("DB_HOST"))
-        print(os.getenv("DB_USER"))
-        print(os.getenv("DB_PORT"))
-        print(os.getenv("DB_PASSWORD"))
-        print(os.getenv("DB_NAME"))
+        db_exists = DB_PATH.exists()
+        print("Connecting to SQLite database...")
+        connection = sqlite3.connect(DB_PATH)
+        connection.row_factory = sqlite3.Row
+        if not db_exists:
+            print("Database not found. Initializing...")
+            with open(INIT_DB_PATH, "r", encoding="utf-8") as file:
+                connection.executescript(file.read())
+            connection.commit()
+            print("Database initialized successfully.")
 
-        connection = pymysql.connect(
-            host=os.getenv("DB_HOST"),
-            user=os.getenv("DB_USER"),
-            port=int(os.getenv("DB_PORT")),
-            password=os.getenv("DB_PASSWORD"),
-            database=os.getenv("DB_NAME"),
-            cursorclass=pymysql.cursors.DictCursor
-        )
         return connection
-    except pymysql.MySQLError as e:  
+    except sqlite3.Error as e:  
         print(f"Error in connecting to database {e}")
         return None

@@ -3,38 +3,35 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
+import sqlite3
 from db_connection import create_connection
 
 def empty_database():
-    conn= create_connection()
-    cursor = conn.cursor()
+    conn = create_connection()
     if conn is None:
         print("failed to connect to DB")
         return
-    
-    cursor.execute(
-        """
-        DELETE FROM news
-        WHERE (
-            (STR_TO_DATE(published, '%Y-%m-%d %H:%i:%s.%f') IS NOT NULL AND STR_TO_DATE(published, '%Y-%m-%d %H:%i:%s.%f') < NOW() - INTERVAL 15 DAY)
-            OR
-            (STR_TO_DATE(published, '%Y-%m-%d %H:%i:%s') IS NOT NULL AND STR_TO_DATE(published, '%Y-%m-%d %H:%i:%s') < NOW() - INTERVAL 15 DAY)
-        )
-        """
-    )
+    cursor = conn.cursor()
 
-    print("Database emptied successfully")
-    conn.commit()
-    cursor.close()
-    conn.close()
-
+    try:
+        cursor.execute("""
+            DELETE FROM news
+            WHERE julianday(published) < julianday('now', '-15 days')
+        """)
+        conn.commit()
+        print("Old news deleted successfully")
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+    finally:
+        conn.close()
+        
 def fetch_and_store_news():
     conn = create_connection()
-    cursor = conn.cursor()
 
     if conn is None:
         print("failed to connect to DB")
         return
+    cursor = conn.cursor()
 
     RSS_URL = {
         "General" : [
@@ -212,16 +209,15 @@ def fetch_and_store_news():
                             image = thumb['url']
                             break
 
-                cursor.execute("SELECT id FROM news WHERE link = %s", (link,))
+                cursor.execute("SELECT id FROM news WHERE link = ?", (link,))
 
                 if not cursor.fetchone():
                     cursor.execute(
-                        "INSERT INTO news (category_name, title, link, source, image, published, summary) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                        "INSERT INTO news (category_name, title, link, source, image, published, summary) VALUES (?, ?, ?, ?, ?, ?, ?)",
                         (category, title, link, source, image, published_str, summary)
                     )
-    cursor.close()
+                    print(f"Inserted: {title}")
     conn.commit()
-    print(f"Inserted: {title}")
     conn.close()
 
 fetch_and_store_news()
