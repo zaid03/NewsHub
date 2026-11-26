@@ -1,17 +1,17 @@
-const mysql = require('mysql2/promise');
-require('dotenv').config();
+const Database = require('better-sqlite3');
+const path = require('path');
 
-const connecttodb = async () => {
-    try{
-        const connection = await mysql.createConnection({
-            host: process.env.DB_HOST,
-            port: process.env.DB_PORT,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME,
-        });
-        console.log("connected to db successfully");
-        return connection;
+const DB_PATH = path.resolve(__dirname, '../../database/newshub.db');
+
+const connecttodb = () => {
+    try {
+        const db = new Database(DB_PATH);
+
+        db.pragma('foreign_keys = ON');
+
+        console.log("Connected to SQLite database successfully");
+        return db;
+
     } catch (error) {
         console.error("Error connecting to the database:", error);
         throw error;

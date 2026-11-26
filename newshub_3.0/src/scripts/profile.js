@@ -35,9 +35,12 @@ function loadContentDynimically() {
     })
     .then(res => res.json())
     .then(data => {
+        console.log('Full API response:', data);
+    console.log('Article count:', data.article_count);
+
         if (data.success) {
             console.log('user info:', data);
-            const saved_articles = data.articles;
+            const saved_articles = data.article_count;
             rendersave(saved_articles);
         } else {
             console.error('Error:', data.message);
@@ -56,7 +59,7 @@ function loadContentDynimically() {
     .then(data => {
         if (data.success) {
             console.log('user info:', data);
-            const following_sources = data.sources;
+            const following_sources = data.source_count;
             renderfollowing(following_sources);
         } else {
             console.error('Error:', data.message);
@@ -75,7 +78,7 @@ function loadContentDynimically() {
     .then(data => {
         if (data.success) {
             console.log('user info:', data);
-            const articles_read = data.history;
+            const articles_read = data.article_count;
             renderarticlesRead(articles_read);
         } else {
             console.error('Error:', data.message);
@@ -127,34 +130,19 @@ function renderuserinto(user_info){
     populateSettingsForm(user_info);
 }
 
-function rendersave(saved_articles){
+function rendersave(saved_articles) {
     const statone = document.getElementById("saved-article");
-
-    if (saved_articles.length > 0) {
-        statone.innerHTML = saved_articles[0]["count(100)"];
-    } else {
-        statone.innerHTML = 0;
-    }
+    statone.innerHTML = saved_articles;
 }
 
-function renderfollowing(following_sources){
+function renderfollowing(following_sources) {
     const stattwo = document.getElementById("following");
-
-    if (following_sources.length > 0) {
-        stattwo.innerHTML = following_sources[0]["count(100)"];
-    } else {
-        stattwo.innerHTML = 0;
-    }
+    stattwo.innerHTML = following_sources;
 }
 
-function renderarticlesRead(articles_read){
+function renderarticlesRead(articles_read) {
     const statthree = document.getElementById("articles");
-
-    if (articles_read.length > 0) {
-        statthree.innerHTML = articles_read[0]["count(*)"];
-    } else {
-        statthree.innerHTML = 0;
-    }
+    statthree.innerHTML = articles_read;
 }
 
 function renderfollowedbuttons(categories){
