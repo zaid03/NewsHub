@@ -15,7 +15,7 @@ function createWindow() {
 
   mainWindow.on("ready-to-show", mainWindow.show);
   mainWindow.maximize();
-  mainWindow.loadFile("./src/components/login.html");
+  mainWindow.loadFile("./src/index.html");
 
   mainWindow.on("closed", () => {
     mainWindow = null;

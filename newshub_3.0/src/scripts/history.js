@@ -1,19 +1,9 @@
-// Simple history loader - just show the data
 function loadHistoryArticles() {
     console.log("loadHistoryArticles function called");
-    const user_id = sessionStorage.getItem("user_id");
-    console.log("User ID from sessionStorage:", user_id);
-    
-    if (!user_id) {
-        console.log("No user logged in");
-        return;
-    }
-
     console.log("Making fetch request to history API");
     fetch('http://localhost:3000/api/history/select', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id })
     })
     .then(res => {
         console.log("Response received:", res);
@@ -35,15 +25,7 @@ function loadHistoryArticles() {
 
 function searchHistoryArticles(searchTerm) {
     console.log("searchHistoryArticles function called with:", searchTerm);
-    const user_id = sessionStorage.getItem("user_id");
-    
-    if (!user_id) {
-        console.log("No user logged in");
-        return;
-    }
-
     if (!searchTerm || searchTerm.trim() === '') {
-        // If empty search, load all articles
         loadHistoryArticles();
         return;
     }
@@ -53,7 +35,6 @@ function searchHistoryArticles(searchTerm) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-            user_id: user_id,
             searchTerm: searchTerm.trim()
         })
     })
@@ -121,13 +102,6 @@ function clearSearch() {
 //  Category filter function
 function filterByCategory(category) {
     console.log("Filtering by category:", category);
-    const user_id = sessionStorage.getItem("user_id");
-    
-    if (!user_id) {
-        console.log("No user logged in");
-        return;
-    }
-
     if (category === 'all') {
         loadHistoryArticles();
         return;

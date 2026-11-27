@@ -28,40 +28,10 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
       });
-        const nom_storage = sessionStorage.getItem("nom") || "Valeur non disponible";
-        const gender_storage = sessionStorage.getItem("gender") || "Valeur non disponible";
-
-        if ((!sessionStorage.getItem("user_id")) || (!sessionStorage.getItem("nom")))
-            alert("no name and user id");   
-
-        const gender = document.getElementById("gender");
-        const nom= document.getElementById("nom");
-        console.log("gender", sessionStorage.getItem("gender"));
-        console.log("nom", sessionStorage.getItem("nom"));
-        
-        if (gender) {
-            gender.innerHTML = gender_storage === "female"
-            ? `<img src="./assets/avatar_female.svg" alt="Avatar">`
-            : `<img src="./assets/avatar_male.svg" alt="Avatar">`;
-        }
-
-        if (nom) {
-            nom.innerHTML = nom_storage;
-        }
-
-        const out = document.getElementById("out");
-        if (out) {
-          out.addEventListener("click", function (event) {
-            event.preventDefault();
-            localStorage.removeItem("user_id");
-            window.location.href = "../src/components/login.html";
-          });
-        }
-
-      })
+    })
       .catch(error => {
         console.error("Error loading sidebar:", error);
-      });
+    });
   }
 
   const trendingPlaceholder = document.querySelector("trending-placeholder");
@@ -300,57 +270,3 @@ function setupArticleViewer() {
     if (sideicon) sideicon.style.visibility = "visible";
   });
 }
-
-// document.addEventListener('mousemove', (e) => {
-//     const cards = document.querySelectorAll('.category-card, .news-card');
-//     const mouseX = e.clientX / window.innerWidth;
-//     const mouseY = e.clientY / window.innerHeight;
-
-//     cards.forEach((card, index) => {
-//         const speed = (index % 3 + 1) * 0.5;
-//         const x = (mouseX - 0.5) * speed;
-//         const y = (mouseY - 0.5) * speed;
-        
-//         card.style.transform += ` translate3d(${x}px, ${y}px, 0)`;
-//     });
-// });
-
-// function handleCategoryClick(category, el, event) {
-//   if (event) event.preventDefault();
-//   el.style.transform = 'scale(0.95)';
-//   setTimeout(() => {
-//     el.style.transform = '';
-//     window.location.hash = `category=${encodeURIComponent(category)}`;
-//   }, 150);
-// }
-
-// document.addEventListener('keydown', function(e) {
-//   if (e.key === 'Enter' && e.target.classList.contains('category-card')) {
-//     e.target.click();
-//   }
-// });
-
-// window.addEventListener('hashchange', function() {
-//   const hash = window.location.hash;
-//   if (hash.startsWith('#category=')) {
-//     const category = decodeURIComponent(hash.replace('#category=', ''));
-//     selectCategory(category);
-//   }
-// });
-
-// Optionally, load category if hash is present on page load
-// document.addEventListener('DOMContentLoaded', function() {
-//   const hash = window.location.hash;
-//   if (hash.startsWith('#category=')) {
-//     const category = decodeURIComponent(hash.replace('#category=', ''));
-//     selectCategory(category);
-//   }
-// });
-
-// const { ipcMain } = require('electron');
-
-// ipcMain.on('navigate-to', (event, path) => {
-//     // Get the sender window and load the new file
-//     const webContents = event.sender;
-//     webContents.loadFile(path);
-// });

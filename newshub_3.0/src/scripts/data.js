@@ -23,35 +23,23 @@ function trackTrendingClick(title) {
     });
 }
 
-function trackReadingHistory(article) {
-    const user_id = sessionStorage.getItem("user_id");
-    
+function trackReadingHistory(article) {    
     console.log('=== HISTORY TRACKING DEBUG ===');
-    console.log('Raw user_id from sessionStorage:', user_id);
-    console.log('user_id type:', typeof user_id);
-    console.log('user_id is null?', user_id === null);
-    console.log('user_id is empty string?', user_id === '');
     console.log('All sessionStorage items:', Object.entries(sessionStorage));
     console.log('Article being tracked:', article);
     console.log('================================');
-    
-    if (!user_id) {
-        console.log('No user logged in, skipping history tracking');
-        return;
-    }
 
     fetch('http://localhost:3000/api/history/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-            user_id: user_id,
-            category_name: article.category_name || '',
-            title: article.title || '',
-            link: article.link || '',
-            source: article.source || '',
-            image: article.image || '',
-            published: article.published || '',
-            summary: article.summary || ''
+          category_name: article.category_name || '',
+          title: article.title || '',
+          link: article.link || '',
+          source: article.source || '',
+          image: article.image || '',
+          published: article.published || '',
+          summary: article.summary || ''
         })
     })
     .then(res => res.json())
@@ -102,11 +90,6 @@ function renderNewsChunk() {
 
     const btn = card.querySelector('.follow-btn');
     btn.addEventListener('click', function() {
-      const user_id = sessionStorage.getItem("user_id");
-      if (!user_id) {
-        console.error("User ID not found in sessionStorage.");
-        return;
-      }
 
       if (btn.classList.contains('following')) {
         btn.classList.remove('following');
@@ -115,7 +98,7 @@ function renderNewsChunk() {
         fetch(`http://localhost:3000/api/unfollow`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id, topics: [article.source] })
+          body: JSON.stringify({topics: [article.source] })
         })
         .then(res => res.json())
         .then(data => {
@@ -132,7 +115,7 @@ function renderNewsChunk() {
         fetch(`http://localhost:3000/api/follow`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id, topics: [article.source] })
+          body: JSON.stringify({topics: [article.source] })
         })
         .then(res => res.json())
         .then(data => {
@@ -147,22 +130,15 @@ function renderNewsChunk() {
 
     const saveBtn = card.querySelector('.save-btn');
     saveBtn.addEventListener('click', function() {
-      const user_id = sessionStorage.getItem("user_id");
-      if (!user_id) {
-        console.error("User ID not found in sessionStorage.");
-        return;
-      }
 
       if (saveBtn.classList.contains('saved')) {
-        // Remove from saved
         saveBtn.classList.remove('saved');
-        saveBtn.innerHTML = '<i class="far fa-bookmark"></i>'; // Empty bookmark for unsaved
+        saveBtn.innerHTML = '<i class="far fa-bookmark"></i>';
         
         fetch('http://localhost:3000/api/saved/delete', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
-            user_id: user_id, 
             link: article.link 
           })
         })
@@ -175,15 +151,13 @@ function renderNewsChunk() {
           }
         });
       } else {
-        // Add to saved
         saveBtn.classList.add('saved');
-        saveBtn.innerHTML = '<i class="fas fa-bookmark"></i>'; // Filled bookmark for saved
+        saveBtn.innerHTML = '<i class="fas fa-bookmark"></i>';
         
         fetch('http://localhost:3000/api/saved/add', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
-            user_id: user_id,
             category_name: article.category_name,
             title: article.title,
             link: article.link,
@@ -209,13 +183,7 @@ function renderNewsChunk() {
 }
 
 function loadMainNews() {
-  const user_id = sessionStorage.getItem("user_id");
-  if (!user_id) {
-    console.error("User ID not found in sessionStorage.");
-    return;
-  }
-
-  fetch(`http://localhost:3000/api/news/preferences?user_id=${user_id}`)
+  fetch(`http://localhost:3000/api/news/preferences`)
     .then(res => res.json())
     .then(data => {
       allNews = data.news || [];
@@ -229,13 +197,7 @@ function loadMainNews() {
 }
 
 function loadSecondaryNews(){
-  const user_id = sessionStorage.getItem("user_id");
-  if (!user_id) {
-    console.error("User ID not found in sessionStorage.");
-    return;
-  }
-
-  fetch(`http://localhost:3000/api/news/nonpreferences?user_id=${user_id}`)
+  fetch(`http://localhost:3000/api/news/nonpreferences`)
     .then(res => res.json())
     .then(data => {
       allNews = data.news || [];
@@ -249,13 +211,9 @@ function loadSecondaryNews(){
 }
 
 function updateFollowButtons() {
-  const user_id = sessionStorage.getItem("user_id");
-  if (!user_id) return;
-
   fetch(`http://localhost:3000/api/followed`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ user_id })
   })
     .then(res => res.json())
     .then(data => {
@@ -268,9 +226,7 @@ function updateFollowButtons() {
           const card = btn.closest('.card, .cat-card, .follow-card');
           if (!card) return;
           
-          let topicElem = card.querySelector('.follow-card-topic') || 
-                         card.querySelector('.cat-card-topic') || 
-                         card.querySelector('.card-topic');
+          let topicElem = card.querySelector('.follow-card-topic') || card.querySelector('.cat-card-topic') || card.querySelector('.card-topic');
           
           if (!topicElem) {
             console.log("No topic element found in card"); 
@@ -299,30 +255,10 @@ function updateFollowButtons() {
     });
 }
 
-// window.addEventListener("scroll", () => {
-//   const container = document.getElementById("main-news-container");
-//   if (!container) return;
-//   if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
-//     // If not all news are displayed, load more
-//     if (displayedCount < allNews.length) {
-//       renderNewsChunk();
-//       updateFollowButtons();
-//     }
-//   }
-// });
-
 function loadFollowingNews() {
-  console.log("Loading following news...");
-  const user_id = sessionStorage.getItem("user_id");
-  if (!user_id) {
-    document.getElementById("main-news-container").innerHTML = "<p>Please log in to see your followed news.</p>";
-    return;
-  }
-
   fetch('http://localhost:3000/api/news/following', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ user_id })
   })
     .then(res => res.json())
     .then(data => {
@@ -370,19 +306,13 @@ function renderFollowingNewsChunk() {
 
     const btn = card.querySelector('.follow-btn');
     btn.addEventListener('click', function() {
-      const user_id = sessionStorage.getItem("user_id");
-      if (!user_id) {
-        console.error("User ID not found in sessionStorage.");
-        return;
-      }
-
       if (btn.classList.contains('following')) {
         btn.classList.remove('following');
         btn.innerHTML = '<i class="fa fa-plus"></i>';
         fetch('http://localhost:3000/api/unfollow', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id, topics: [article.source] })
+          body: JSON.stringify({topics: [article.source] })
         });
       } else {
         btn.classList.add('following');
@@ -390,19 +320,13 @@ function renderFollowingNewsChunk() {
         fetch('http://localhost:3000/api/follow', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id, topics: [article.source] })
+          body: JSON.stringify({topics: [article.source] })
         });
       }
     });
 
     const saveBtn = card.querySelector('.save-btn');
     saveBtn.addEventListener('click', function() {
-      const user_id = sessionStorage.getItem("user_id");
-      if (!user_id) {
-        console.error("User ID not found in sessionStorage.");
-        return;
-      }
-
       if (saveBtn.classList.contains('saved')) {
         saveBtn.classList.remove('saved');
         saveBtn.innerHTML = '<i class="far fa-bookmark"></i>';
@@ -411,7 +335,6 @@ function renderFollowingNewsChunk() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
-            user_id: user_id, 
             link: article.link 
           })
         })
@@ -431,7 +354,6 @@ function renderFollowingNewsChunk() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
-            user_id: user_id,
             category_name: article.category_name,
             title: article.title,
             link: article.link,
@@ -540,12 +462,6 @@ function renderCategoryNewsChunk() {
 
     const btn = card.querySelector('.follow-btn');
     btn.addEventListener('click', function() {
-      const user_id = sessionStorage.getItem("user_id");
-      if (!user_id) {
-        console.error("User ID not found in sessionStorage.");
-        return;
-      }
-
       if (btn.classList.contains('following')) {
         btn.classList.remove('following');
         btn.innerHTML = '<i class="fa fa-plus"></i>';
@@ -553,7 +469,7 @@ function renderCategoryNewsChunk() {
         fetch('http://localhost:3000/api/unfollow', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id, topics: [article.source] })
+          body: JSON.stringify({topics: [article.source] })
         })
         .then(res => res.json())
         .then(data => {
@@ -573,7 +489,7 @@ function renderCategoryNewsChunk() {
         fetch('http://localhost:3000/api/follow', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id, topics: [article.source] })
+          body: JSON.stringify({topics: [article.source] })
         })
         .then(res => res.json())
         .then(data => {
@@ -591,14 +507,7 @@ function renderCategoryNewsChunk() {
 
     const saveBtn = card.querySelector('.save-btn');
     saveBtn.addEventListener('click', function() {
-      const user_id = sessionStorage.getItem("user_id");
-      if (!user_id) {
-        console.error("User ID not found in sessionStorage.");
-        return;
-      }
-
       if (saveBtn.classList.contains('saved')) {
-        // Remove from saved
         saveBtn.classList.remove('saved');
         saveBtn.innerHTML = '<i class="far fa-bookmark"></i>';
         
@@ -606,7 +515,6 @@ function renderCategoryNewsChunk() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
-            user_id: user_id, 
             link: article.link 
           })
         })
@@ -619,7 +527,6 @@ function renderCategoryNewsChunk() {
           }
         });
       } else {
-        // Add to saved
         saveBtn.classList.add('saved');
         saveBtn.innerHTML = '<i class="fas fa-bookmark"></i>';
         
@@ -627,7 +534,6 @@ function renderCategoryNewsChunk() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
-            user_id: user_id,
             category_name: article.category_name,
             title: article.title,
             link: article.link,
@@ -763,7 +669,6 @@ function renderTrendingNews(trending) {
 
   const grid = document.getElementById("trending-grid");
   grid.innerHTML = "";
-  // #2 and #3
   [1, 2].forEach(i => {
     if (trending[i]) {
       const article = trending[i];
@@ -784,7 +689,6 @@ function renderTrendingNews(trending) {
       grid.appendChild(card);
     }
   });
-  // The rest (no badge or with #4, #5, ...)
   for (let i = 3; i < trending.length; i++) {
     const article = trending[i];
     const card = document.createElement("div");
@@ -806,18 +710,10 @@ function renderTrendingNews(trending) {
 
 //function to check for saved articles
 function updateSaveButtons() {
-  const user_id = sessionStorage.getItem("user_id");
-  if (!user_id) {
-    console.log("No user_id found in sessionStorage");
-    return;
-  }
-
-  console.log("Fetching saved articles for user:", user_id);
 
   fetch(`http://localhost:3000/api/saved/select`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ user_id })
   })
     .then(res => res.json())
     .then(data => {
@@ -836,10 +732,10 @@ function updateSaveButtons() {
 
           if (savedLinks.includes(articleLink)) {
             btn.classList.add('saved');
-            btn.innerHTML = '<i class="fas fa-bookmark"></i>'; // Filled bookmark
+            btn.innerHTML = '<i class="fas fa-bookmark"></i>'; 
           } else {
             btn.classList.remove('saved');
-            btn.innerHTML = '<i class="far fa-bookmark"></i>'; // Empty bookmark
+            btn.innerHTML = '<i class="far fa-bookmark"></i>';
           }
         });
       }
@@ -852,17 +748,9 @@ function updateSaveButtons() {
 // Load saved articles for the current user
 function loadSavedArticles() {
     console.log("Loading saved articles...");
-    const user_id = sessionStorage.getItem("user_id");
-    
-    if (!user_id) {
-        document.getElementById("saved-articles").innerHTML = "<p>Please log in to see your saved articles.</p>";
-        return;
-    }
-
     fetch('http://localhost:3000/api/saved/select', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id })
     })
     .then(res => res.json())
     .then(data => {
@@ -890,7 +778,6 @@ function renderSavedArticles(articles) {
     if (!articles || articles.length === 0) {
       const searchFeedback = document.querySelector('.search-feedback');
         if (searchFeedback) {
-            // Show no results message for search
             container.innerHTML = `
                 <div class="no-results">
                     <i class="fas fa-search"></i>
@@ -899,10 +786,9 @@ function renderSavedArticles(articles) {
                 </div>
             `;
         } else {
-            // Show regular empty state
-            showEmptyState();
+          showEmptyState();
         }
-        return;
+      return;
     }
 
     // Hide empty state and show grid
@@ -967,14 +853,6 @@ function updateArticleCount(count) {
 
 // Remove article from saved
 function removeSavedArticle(link, buttonElement) {
-    const user_id = sessionStorage.getItem("user_id");
-    
-    if (!user_id) {
-        console.error("User ID not found");
-        return;
-    }
-
-    // Show loading state
     const originalText = buttonElement.innerHTML;
     buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
     buttonElement.disabled = true;
@@ -983,21 +861,18 @@ function removeSavedArticle(link, buttonElement) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-            user_id: user_id, 
-            link: link 
+          link: link 
         })
     })
     .then(res => res.json())
     .then(data => {
         if (data.success) {
             console.log('Article removed successfully');
-            // Remove the card from DOM with animation
             const card = buttonElement.closest('.saved-card');
             card.style.transform = 'translateX(100%)';
             card.style.opacity = '0';
             setTimeout(() => {
                 card.remove();
-                // Reload to update count
                 loadSavedArticles();
             }, 300);
         } else {
@@ -1017,14 +892,6 @@ function removeSavedArticle(link, buttonElement) {
 
 // Clear all saved articles
 function clearAllSavedArticles() {
-    const user_id = sessionStorage.getItem("user_id");
-    console.log("mf is clicked");
-    
-    if (!user_id) {
-      console.error("User ID not found");
-      return;
-    }
-
     if (!confirm("Are you sure you want to remove all saved articles? This action cannot be undone.")) {
         return;
     }
@@ -1032,7 +899,6 @@ function clearAllSavedArticles() {
     fetch('http://localhost:3000/api/saved/clear-all', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id })
     })
     .then(res => res.json())
     .then(data => {
@@ -1053,13 +919,6 @@ function clearAllSavedArticles() {
 
 function searchSavedArticles(searchTerm) {
     console.log("🔍 searchSavedArticles called with:", searchTerm);
-    const user_id = sessionStorage.getItem("user_id");
-    
-    if (!user_id) {
-        document.getElementById("saved-articles").innerHTML = "<p>Please log in to see your saved articles.</p>";
-        return;
-    }
-
     if (!searchTerm || searchTerm.trim() === '') {
         loadSavedArticles();
         return;
@@ -1069,8 +928,7 @@ function searchSavedArticles(searchTerm) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-            user_id: user_id,
-            searchTerm: searchTerm.trim()
+          searchTerm: searchTerm.trim()
         })
     })
     .then(res => {
@@ -1170,7 +1028,7 @@ function setupSavedSearchListeners() {
                     console.log("⚡ Auto-searching for:", searchTerm);
                     searchSavedArticles(searchTerm);
                 }
-            }, 500); // Wait 500ms after user stops typing
+            }, 500);
         });
         
         console.log("✅ Saved search listeners added successfully");
@@ -1201,8 +1059,8 @@ function searchGeneralNews(searchTerm) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-            searchTerm: searchTerm.trim()
-        })
+          searchTerm: searchTerm.trim()
+      })
     })
     .then(res => {
         console.log("📥 Search response received:", res);
@@ -1212,23 +1070,18 @@ function searchGeneralNews(searchTerm) {
         console.log("📊 Search data received:", data);
         if (data.success) {
             console.log("✅ Search results:", data.results);
-            
-            // Update global news array and reset count
             allNews = data.results;
             displayedCount = 0;
             
-            // Clear container and render search results
             document.getElementById("main-news-container").innerHTML = "";
-            
-            // Show search feedback
+
             showMainSearchFeedback(data.results.length, data.searchTerm);
             
-            // Render based on current page
             const hash = window.location.hash.replace('#', '') || 'main';
             if (hash === 'following') {
                 renderFollowingNewsChunk();
             } else {
-                renderNewsChunk(); // For main and discover pages
+                renderNewsChunk();
             }
             
             updateFollowButtons();
@@ -1246,10 +1099,9 @@ function searchGeneralNews(searchTerm) {
 function showMainSearchFeedback(resultCount, searchTerm) {
     console.log("📝 Showing main search feedback:", resultCount, searchTerm);
     
-    // Remove any existing feedback
     const existingFeedback = document.querySelector('.main-search-feedback');
     if (existingFeedback) {
-        existingFeedback.remove();
+      existingFeedback.remove();
     }
 
     // Create feedback element
@@ -1310,11 +1162,9 @@ function setupMainSearchListeners() {
     if (searchInput) {
         console.log("✅ Main search input found, adding listeners");
         
-        // Remove any existing listeners to prevent duplicates
         const newSearchInput = searchInput.cloneNode(true);
         searchInput.parentNode.replaceChild(newSearchInput, searchInput);
         
-        // Handle Enter key press
         newSearchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 const searchTerm = this.value.trim();
@@ -1323,7 +1173,6 @@ function setupMainSearchListeners() {
             }
         });
 
-        // Handle input changes (search as you type)
         let searchTimeout;
         newSearchInput.addEventListener('input', function(e) {
             clearTimeout(searchTimeout);
@@ -1333,7 +1182,7 @@ function setupMainSearchListeners() {
                     console.log("⚡ Auto-searching for:", searchTerm);
                     searchGeneralNews(searchTerm);
                 }
-            }, 500); // Wait 500ms after user stops typing
+            }, 500);
         });
         
         console.log("✅ Main search listeners added successfully");

@@ -27,145 +27,22 @@ app.use(
     })
 );
 
-//sign route
-app.post('/api/sign', (req, res) => {
-    console.log('Sign route hit');
-
-    try {
-        const { utilisateurr, email, gender, motdepasss} = req.body;
-
-        console.log(req.body);
-        const errors = {};
-
-        if (!utilisateurr) errors.utilisateurr = "User name required.";
-        if (!email) errors.threeemail = "Email required.";
-        if (!gender) errors.gendererror = "Gender required.";
-        if (!motdepasss) errors.motdepasss = "Password required.";
-
-        if (Object.keys(errors).length > 0) {
-            return res.status(400).json({ success: false, errors });
-        }
-
-        const existingUser = db.prepare(
-            'SELECT * FROM sign WHERE email = ?'
-        ).get(email);
-
-        console.log('exiting user: ',existingUser);
-
-        if (existingUser) {
-            return res.status(400).json({
-                success: false,
-                errors: {
-                    twoemail: "this email is already registered.",
-                }
-              });
-        }
-
-        const result = db.prepare(
-            'INSERT INTO sign (utilisateur, email, gender, motdepass) VALUES (?, ?, ?, ?)'
-        ).run(utilisateurr, email, gender, motdepasss);
-        console.log('user saved : ',result);
-
-        const user_id = Number(result.lastInsertRowid);
-        req.session.user_id = user_id;
-        res.json({ 
-            success: true, 
-            user_id ,message: "Inscription réussie." 
-        });
-
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Erreur interne du serveur.", error });
-    }
-});
-
-// Login route
-app.post('/api/login', (req, res) => {
-    try {
-        const { utilisateur, motdepass } = req.body;
-
-        if (!utilisateur || !motdepass) {
-            return res.status(400).json({
-                success: false,
-                message: 'utilisateur et mot de passe requis.'
-            });
-        }
-
-        console.log('Login attempt:', { utilisateur });
-
-        const user = db.prepare(`
-            SELECT id, utilisateur, gender, motdepass
-            FROM sign
-            WHERE utilisateur = ?
-            AND (disabled IS NULL OR disabled = 0)
-        `).get(utilisateur);
-
-        console.log('Query result:', user);
-
-        if (user) {
-            if (motdepass === user.motdepass) {
-                req.session.user_id = user.id;
-                req.session.utilisateur = user.utilisateur || '';
-
-                console.log('User ID from database:', user.id);
-
-                return res.json({
-                    success: true,
-                    user_id: user.id,
-                    nom: user.utilisateur || '',
-                    gender: user.gender || '',
-                    message: 'Connexion réussie.'
-                });
-            }
-
-            return res.status(401).json({
-                success: false,
-                message: 'Mot de passe incorrect.'
-            });
-        }
-
-        return res.status(404).json({
-            success: false,
-            message: 'utilisateur introuvable.'
-        });
-
-    } catch (error) {
-        console.error('Error during login:', error);
-        return res.status(500).json({
-            success: false,
-            message: 'Erreur interne du serveur.'
-        });
-    }
-});
-
 // News route for preferences
 app.get('/api/news/preferences', (req, res) => {
     try {
-        const user_id = req.query.user_id;
-
-        console.log('Query parameters:', { user_id });
-
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID is required.'
-            });
-        }
-
         const preferencesRow = db.prepare(
-            'SELECT preferences FROM preferences WHERE user_id = ?'
-        ).get(user_id);
+            'SELECT preferences FROM preferences'
+        ).get();
+        console.log(preferencesRow);
 
         if (!preferencesRow || !preferencesRow.preferences) {
             return res.status(404).json({
                 success: false,
-                message: 'No preferences found for this user.'
+                message: 'No preferences found'
             });
         }
 
-        const preferences = preferencesRow.preferences
-            .split(',')
-            .map(pref => pref.trim())
-            .filter(Boolean);
+        const preferences = preferencesRow.preferences.split(',').map(pref => pref.trim()).filter(Boolean);
 
         if (preferences.length === 0) {
             return res.status(404).json({
@@ -209,32 +86,18 @@ app.get('/api/news/nonpreferences', (req, res) => {
     console.log('Non-preferences route hit');
 
     try {
-        const user_id = req.query.user_id;
-
-        console.log('Query parameters:', { user_id });
-
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID is required.'
-            });
-        }
-
         const preferencesRow = db.prepare(
-            'SELECT preferences FROM preferences WHERE user_id = ?'
-        ).get(user_id);
+            'SELECT preferences FROM preferences'
+        ).get();
 
         if (!preferencesRow || !preferencesRow.preferences) {
             return res.status(404).json({
                 success: false,
-                message: 'No preferences found for this user.'
+                message: 'No preferences found'
             });
         }
 
-        const preferences = preferencesRow.preferences
-            .split(',')
-            .map(pref => pref.trim())
-            .filter(Boolean);
+        const preferences = preferencesRow.preferences.split(',').map(pref => pref.trim()).filter(Boolean);
 
         if (preferences.length === 0) {
             return res.status(404).json({
@@ -315,72 +178,71 @@ app.post('/api/pref', (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: "Erreur interne du serveur."
+            message: "Server Error"
         });
     }
 });
 
 // Notification route
-app.post('/api/notification', (req, res) => {
-    console.log('Notification route hit');
+// app.post('/api/notification', (req, res) => {
+//     console.log('Notification route hit');
 
-    try {
-        const { user_id, notifications } = req.body;
+//     try {
+//         const { user_id, notifications } = req.body;
 
-        console.log('User ID:', user_id);
-        console.log('Notifications:', notifications);
+//         console.log('User ID:', user_id);
+//         console.log('Notifications:', notifications);
 
-        if (!notifications || (Array.isArray(notifications) && notifications.length === 0)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Sujets requis.'
-            });
-        }
+//         if (!notifications || (Array.isArray(notifications) && notifications.length === 0)) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: 'Sujets requis.'
+//             });
+//         }
 
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID requis.'
-            });
-        }
+//         if (!user_id) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: 'User ID requis.'
+//             });
+//         }
 
-        const notificationString = Array.isArray(notifications)
-            ? notifications.join(', ')
-            : notifications;
+//         const notificationString = Array.isArray(notifications)
+//             ? notifications.join(', ')
+//             : notifications;
 
-        db.prepare(
-            'INSERT INTO notification (user_id, notification) VALUES (?, ?)'
-        ).run(user_id, notificationString);
+//         db.prepare(
+//             'INSERT INTO notification (user_id, notification) VALUES (?, ?)'
+//         ).run(user_id, notificationString);
 
-        return res.json({
-            success: true,
-            message: "Inscription réussie."
-        });
+//         return res.json({
+//             success: true,
+//             message: "Inscription réussie."
+//         });
 
-    } catch (error) {
-        console.error('Error during notification submission:', error);
+//     } catch (error) {
+//         console.error('Error during notification submission:', error);
 
-        return res.status(500).json({
-            success: false,
-            message: "Erreur interne du serveur."
-        });
-    }
-});
+//         return res.status(500).json({
+//             success: false,
+//             message: "Server Error"
+//         });
+//     }
+// });
 
 // Route for following news
 app.post('/api/follow', (req, res) => {
     console.log('Follow route hit');
 
     try {
-        const { user_id, topics } = req.body;
+        const {topics } = req.body;
 
-        console.log('User ID:', user_id);
         console.log('Topics:', topics);
 
-        if (!user_id || !topics || (Array.isArray(topics) && topics.length === 0)) {
+        if (!topics || (Array.isArray(topics) && topics.length === 0)) {
             return res.status(400).json({
                 success: false,
-                message: 'User ID and Topics are required.'
+                message: 'Topics are required.'
             });
         }
 
@@ -389,8 +251,8 @@ app.post('/api/follow', (req, res) => {
             : topics;
 
         db.prepare(
-            'INSERT INTO following_liste (user_id, topics) VALUES (?, ?)'
-        ).run(user_id, topicsString);
+            'INSERT INTO following_liste (topics) VALUES (?)'
+        ).run(topicsString);
 
         return res.json({
             success: true,
@@ -412,15 +274,14 @@ app.post('/api/unfollow', (req, res) => {
     console.log('Unfollow route hit');
 
     try {
-        const { user_id, topics } = req.body;
+        const {topics } = req.body;
 
-        console.log('User ID:', user_id);
         console.log('Topics:', topics);
 
-        if (!user_id || !topics || (Array.isArray(topics) && topics.length === 0)) {
+        if (!topics || (Array.isArray(topics) && topics.length === 0)) {
             return res.status(400).json({
                 success: false,
-                message: 'User ID and Topics are required.'
+                message: 'Topics are required.'
             });
         }
 
@@ -429,8 +290,8 @@ app.post('/api/unfollow', (req, res) => {
             : topics;
 
         db.prepare(
-            'DELETE FROM following_liste WHERE user_id = ? AND topics = ?'
-        ).run(user_id, topicsString);
+            'DELETE FROM following_liste WHERE topics = ?'
+        ).run(topicsString);
 
         return res.json({
             success: true,
@@ -452,19 +313,9 @@ app.post('/api/followed', (req, res) => {
     console.log('Followed route hit');
 
     try {
-        const { user_id } = req.body;
-        console.log('User ID:', user_id);
-
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID is required.'
-            });
-        }
-
         const rows = db.prepare(
-            'SELECT topics FROM following_liste WHERE user_id = ?'
-        ).all(user_id);
+            'SELECT topics FROM following_liste'
+        ).all();
 
         return res.json({
             success: true,
@@ -486,19 +337,9 @@ app.post('/api/news/following', (req, res) => {
     console.log('Following news route hit');
 
     try {
-        const { user_id } = req.body;
-        console.log('User ID:', user_id);
-
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID is required.'
-            });
-        }
-
         const rows = db.prepare(
-            'SELECT topics FROM following_liste WHERE user_id = ?'
-        ).all(user_id);
+            'SELECT topics FROM following_liste'
+        ).all();
 
         console.log('Followed topics retrieved:', rows);
 
@@ -753,7 +594,6 @@ app.post('/api/saved/add', (req, res) => {
 
     try {
         const {
-            user_id,
             category_name,
             title,
             link,
@@ -765,12 +605,11 @@ app.post('/api/saved/add', (req, res) => {
 
         const result = db.prepare(`
             INSERT INTO saved (
-                user_id, category_name, title, link,
+                category_name, title, link,
                 source, image, published, summary
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         `).run(
-            user_id,
             category_name,
             title,
             link,
@@ -795,7 +634,7 @@ app.post('/api/saved/add', (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: "Erreur interne du serveur."
+            message: "Server Error"
         });
     }
 });
@@ -805,22 +644,11 @@ app.post('/api/saved/select', (req, res) => {
     console.log("Selecting saved articles route hit");
 
     try {
-        const { user_id } = req.body;
-        console.log('User ID:', user_id);
-
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID is required.'
-            });
-        }
-
         const rows = db.prepare(`
             SELECT *
             FROM saved
-            WHERE user_id = ?
             ORDER BY saved_at DESC
-        `).all(user_id);
+        `).all();
 
         return res.json({
             success: true,
@@ -832,7 +660,7 @@ app.post('/api/saved/select', (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: "Erreur interne du serveur."
+            message: "Server Error"
         });
     }
 });
@@ -842,16 +670,7 @@ app.post('/api/saved/delete', (req, res) => {
     console.log("Deleting saved articles route hit");
 
     try {
-        const { user_id, link } = req.body;
-
-        console.log('User ID:', user_id);
-
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID is required.'
-            });
-        }
+        const {link} = req.body;
 
         if (!link) {
             return res.status(400).json({
@@ -861,8 +680,8 @@ app.post('/api/saved/delete', (req, res) => {
         }
 
         const result = db.prepare(
-            'DELETE FROM saved WHERE user_id = ? AND link = ?'
-        ).run(user_id, link);
+            'DELETE FROM saved WHERE link = ?'
+        ).run(link);
 
         if (result.changes === 0) {
             return res.status(404).json({
@@ -881,7 +700,7 @@ app.post('/api/saved/delete', (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: "Erreur interne du serveur."
+            message: "Server Error"
         });
     }
 });
@@ -891,19 +710,9 @@ app.post('/api/saved/clear-all', (req, res) => {
     console.log("Clearing all saved articles route hit");
 
     try {
-        const { user_id } = req.body;
-        console.log('User ID:', user_id);
-
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID is required.'
-            });
-        }
-
         const result = db.prepare(
-            'DELETE FROM saved WHERE user_id = ?'
-        ).run(user_id);
+            'DELETE FROM saved'
+        ).run();
 
         console.log(`Deleted ${result.changes} articles`);
 
@@ -918,47 +727,7 @@ app.post('/api/saved/clear-all', (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: "Erreur interne du serveur."
-        });
-    }
-});
-
-// Settings route for user personal info
-app.post('/api/settings/info', (req, res) => {
-    try {
-        const { user_id } = req.body;
-
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID is required.'
-            });
-        }
-
-        const user = db.prepare(`
-            SELECT
-                COALESCE(utilisateur, '') AS utilisateur,
-                COALESCE(email, '') AS email,
-                COALESCE(gender, '') AS gender
-            FROM sign
-            WHERE id = ?
-        `).get(user_id);
-
-        return res.json({
-            success: true,
-            user_info: [user || {
-                utilisateur: '',
-                email: '',
-                gender: ''
-            }]
-        });
-
-    } catch (error) {
-        console.error("Error selecting user's info:", error);
-
-        return res.status(500).json({
-            success: false,
-            message: "Erreur interne du serveur."
+            message: "Server Error"
         });
     }
 });
@@ -968,23 +737,10 @@ app.post('/api/settings/saved_Articles', (req, res) => {
     console.log("Saved articles info route hit!");
 
     try {
-        const { user_id } = req.body;
-        console.log('User ID:', user_id);
-
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID is required.'
-            });
-        }
-
         const row = db.prepare(`
             SELECT COUNT(*) AS article_count
             FROM saved
-            WHERE user_id = ?
-        `).get(user_id);
-console.log('Requested user_id:', user_id);
-console.log('Query result:', row);
+        `).get();
 
         console.log('saved articles: ',row)
 
@@ -998,7 +754,7 @@ console.log('Query result:', row);
 
         return res.status(500).json({
             success: false,
-            message: "Erreur interne du serveur."
+            message: "Server Error"
         });
     }
 });
@@ -1008,21 +764,10 @@ app.post('/api/settings/following_sources', (req, res) => {
     console.log("Following_sources info route hit!");
 
     try {
-        const { user_id } = req.body;
-        console.log('User ID:', user_id);
-
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID is required.'
-            });
-        }
-
         const row = db.prepare(`
             SELECT COUNT(*) AS source_count
             FROM following_liste
-            WHERE user_id = ?
-        `).get(user_id);
+        `).get();
 
         return res.json({
             success: true,
@@ -1034,7 +779,7 @@ app.post('/api/settings/following_sources', (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: "Erreur interne du serveur."
+            message: "Server Error"
         });
     }
 });
@@ -1044,21 +789,10 @@ app.post('/api/settings/articles_read', (req, res) => {
     console.log("Articles_read info route hit!");
 
     try {
-        const { user_id } = req.body;
-        console.log('User ID:', user_id);
-
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID is required.'
-            });
-        }
-
         const row = db.prepare(`
             SELECT COUNT(*) AS article_count
             FROM history
-            WHERE user_id = ?
-        `).get(user_id);
+        `).get();
 
         return res.json({
             success: true,
@@ -1070,7 +804,7 @@ app.post('/api/settings/articles_read', (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: "Erreur interne du serveur."
+            message: "Server Error"
         });
     }
 });
@@ -1080,21 +814,10 @@ app.post('/api/settings/preferences', (req, res) => {
     console.log("Preferences info route hit!");
 
     try {
-        const { user_id } = req.body;
-        console.log('User ID:', user_id);
-
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID is required.'
-            });
-        }
-
         const rows = db.prepare(`
             SELECT preferences
             FROM preferences
-            WHERE user_id = ?
-        `).all(user_id);
+        `).all();
 
         return res.json({
             success: true,
@@ -1106,7 +829,7 @@ app.post('/api/settings/preferences', (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: "Erreur interne du serveur."
+            message: "Server Error"
         });
     }
 });
@@ -1116,17 +839,10 @@ app.post('/api/settings/preferences-update', (req, res) => {
     console.log("Preferences update route hit!");
 
     try {
-        const { user_id, preferences } = req.body;
 
-        console.log('User ID:', user_id);
-        console.log('Preferences:', preferences);
+        const {preferences } = req.body;
 
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID is required.'
-            });
-        }
+        console.log('Topics:', preferences);
 
         if (!preferences || !Array.isArray(preferences)) {
             return res.status(400).json({
@@ -1139,8 +855,8 @@ app.post('/api/settings/preferences-update', (req, res) => {
         console.log('String is:', preferencesString);
 
         const result = db.prepare(
-            'UPDATE preferences SET preferences = ? WHERE user_id = ?'
-        ).run(preferencesString, user_id);
+            'UPDATE preferences SET preferences = ?'
+        ).run(preferencesString);
 
         console.log('Update result:', result);
 
@@ -1161,101 +877,37 @@ app.post('/api/settings/preferences-update', (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: "Erreur interne du serveur."
+            message: "Server Error"
         });
     }
 });
 
-// Settings route to update user personal info
-app.post('/api/settings/user-info-update', (req, res) => {
-    console.log("Update user personal info route hit!");
-
-    try {
-        const { user_id, name, email, password } = req.body;
-
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID is required.'
-            });
-        }
-
-        if (!name || !email) {
-            return res.status(400).json({
-                success: false,
-                message: 'Name and email are required.'
-            });
-        }
-
-        let query;
-        let params;
-
-        if (password && password.trim() !== '') {
-            query = `
-                UPDATE sign
-                SET utilisateur = ?, email = ?, motdepass = ?
-                WHERE id = ?
-            `;
-            params = [name, email, password, user_id];
-            console.log('Updating with password');
-        } else {
-            query = `
-                UPDATE sign
-                SET utilisateur = ?, email = ?
-                WHERE id = ?
-            `;
-            params = [name, email, user_id];
-            console.log('Updating without password');
-        }
-
-        const result = db.prepare(query).run(...params);
-
-        console.log('Update result:', result);
-
-        if (result.changes > 0) {
-            return res.json({
-                success: true,
-                message: 'User info updated successfully'
-            });
-        }
-
-        return res.json({
-            success: false,
-            message: 'No user found with this ID'
-        });
-
-    } catch (error) {
-        console.error("Error updating user info:", error);
-
-        return res.status(500).json({
-            success: false,
-            message: "Erreur interne du serveur."
-        });
-    }
-});
-
-// Settings route to disable account
+// Settings route to disable account 
+//change to a wipe all date...
 app.post('/api/disable', (req, res) => {
     console.log("Disabling account route hit!");
 
     try {
-        const { user_id } = req.body;
+        const history = db.prepare(
+            'DELETE FROM history'
+        ).run();
+        const following_liste = db.prepare(
+            'DELETE FROM following_liste'
+        ).run();
+        const saved = db.prepare(
+            'DELETE FROM saved'
+        ).run();
+        const preferences = db.prepare(
+            'DELETE FROM preferences'
+        ).run();
+        const notification = db.prepare(
+            'DELETE FROM notification'
+        ).run();
 
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID is required.'
-            });
-        }
-
-        const result = db.prepare(
-            'UPDATE sign SET disabled = 1 WHERE id = ?'
-        ).run(user_id);
-
-        if (result.changes === 0) {
+        if (notification.changes === 0 || preferences.changes === 0 || saved.changes === 0 || following_liste.changes === 0 || history.changes === 0) {
             return res.status(404).json({
                 success: false,
-                message: 'User not found.'
+                message: 'Wiping data failed. try again later'
             });
         }
 
@@ -1269,7 +921,7 @@ app.post('/api/disable', (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: "Erreur interne du serveur."
+            message: "Server Error"
         });
     }
 });
@@ -1280,7 +932,6 @@ app.post('/api/history/add', (req, res) => {
 
     try {
         const {
-            user_id,
             category_name,
             title,
             link,
@@ -1290,24 +941,29 @@ app.post('/api/history/add', (req, res) => {
             summary
         } = req.body;
 
-        console.log('User ID:', user_id);
         console.log(category_name, title, link, source, image, published, summary);
 
-        if (!user_id || !category_name || !title || !link || !source || !image || !published || !summary) {
+        if (!category_name || !title || !link || !source || !image || !published || !summary) {
             return res.status(400).json({
                 success: false,
-                message: 'User ID and other items are required.'
+                message: 'Items are required.'
             });
+        }
+
+        const existingArticle = db.prepare(
+            'SELECT history_id FROM history WHERE link = ?'
+        ).get(link);
+
+        if (existingArticle) {
+            return;
         }
 
         db.prepare(`
             INSERT INTO history (
-                user_id, category_name, title, link,
-                source, image, published, summary
+                category_name, title, link, source, image, published, summary
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         `).run(
-            user_id,
             category_name,
             title,
             link,
@@ -1337,22 +993,11 @@ app.post('/api/history/select', (req, res) => {
     console.log('History selection route hit');
 
     try {
-        const { user_id } = req.body;
-        console.log('User ID:', user_id);
-
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID is required.'
-            });
-        }
-
         const rows = db.prepare(`
-            SELECT *
+            SELECT * 
             FROM history
-            WHERE user_id = ?
             ORDER BY read_at DESC
-        `).all(user_id);
+        `).all();
 
         return res.json({
             success: true,
@@ -1421,17 +1066,9 @@ app.post('/api/saved/search', (req, res) => {
     console.log('Saved search route hit');
 
     try {
-        const { user_id, searchTerm } = req.body;
+        const {searchTerm } = req.body;
 
-        console.log('User ID:', user_id);
         console.log('Search term:', searchTerm);
-
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID is required.'
-            });
-        }
 
         if (!searchTerm || searchTerm.trim() === '') {
             return res.status(400).json({
@@ -1445,14 +1082,13 @@ app.post('/api/saved/search', (req, res) => {
         const rows = db.prepare(`
             SELECT *
             FROM saved
-            WHERE user_id = ?
             AND (
                 category_name LIKE ?
                 OR title LIKE ?
                 OR source LIKE ?
             )
             ORDER BY saved_at DESC
-        `).all(user_id, searchPattern, searchPattern, searchPattern);
+        `).all(searchPattern, searchPattern, searchPattern);
 
         console.log(`Found ${rows.length} saved search results for user ${user_id}, term: ${searchTerm}`);
 
@@ -1477,17 +1113,9 @@ app.post('/api/history/search', (req, res) => {
     console.log('History search route hit');
 
     try {
-        const { user_id, searchTerm } = req.body;
+        const {searchTerm } = req.body;
 
-        console.log('User ID:', user_id);
         console.log('Search term:', searchTerm);
-
-        if (!user_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'User ID is required.'
-            });
-        }
 
         if (!searchTerm || searchTerm.trim() === '') {
             return res.status(400).json({
@@ -1501,14 +1129,13 @@ app.post('/api/history/search', (req, res) => {
         const rows = db.prepare(`
             SELECT *
             FROM history
-            WHERE user_id = ?
             AND (
                 category_name LIKE ?
                 OR title LIKE ?
                 OR source LIKE ?
             )
             ORDER BY read_at DESC
-        `).all(user_id, searchPattern, searchPattern, searchPattern);
+        `).all(searchPattern, searchPattern, searchPattern);
 
         console.log(`Found ${rows.length} history search results for user ${user_id}, term: ${searchTerm}`);
 
